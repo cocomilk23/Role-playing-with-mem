@@ -2,8 +2,5 @@ pydantic>=2.0
 chromadb>=0.5.0
 langchain-community>=0.0.30
 langchain-text-splitters>=0.0.1
-# 实际LLM集成可能需要的库，例如：
-# openai
-# google-genai
-
 sentence-transformers>=2.2.2
+openai>=1.0.0

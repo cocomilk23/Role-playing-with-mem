@@ -1,7 +1,7 @@
 from typing import Optional
 from role import Role
 from memory.manager import MemoryManager
-from llm.connector import LLMConnector, MockLLMConnector
+from llm.connector import LLMConnector, MockLLMConnector, OpenAIConnector
 
 class RolePlayingAgent:
     """
