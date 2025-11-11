@@ -1,0 +1,7 @@
+pydantic>=2.0
+# 实际LLM集成可能需要的库，例如：
+# openai
+# google-genai
+# 实际RAG集成可能需要的库，例如：
+# langchain
+# chromadb

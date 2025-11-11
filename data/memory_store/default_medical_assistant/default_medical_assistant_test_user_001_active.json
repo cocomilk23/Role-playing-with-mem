@@ -1,0 +1,16 @@
+{
+    "user_id": "test_user_001",
+    "role_id": "default_medical_assistant",
+    "items": {
+        "user_preference_food": {
+            "key": "user_preference_food",
+            "value": "清淡少油",
+            "last_accessed": "2025-11-10T22:54:18.934593"
+        },
+        "user_recent_trip": {
+            "key": "user_recent_trip",
+            "value": "下周去上海出差",
+            "last_accessed": "2025-11-10T22:54:18.934599"
+        }
+    }
+}
