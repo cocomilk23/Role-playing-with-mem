@@ -27,16 +27,25 @@ class OpenAIConnector(LLMConnector):
     """
     基于 OpenAI API 的 LLM 连接器实现。
     """
-    def __init__(self, model_name: str = "gpt-4o-mini", api_key: str = None):
+    def __init__(self, model_name: str = "gpt-4o-mini", api_key: str = None, base_url: str = None):
         # 优先使用传入的 api_key，否则尝试从环境变量获取
         key = api_key if api_key else os.environ.get("OPENAI_API_KEY")
         if not key:
-            raise ValueError("OpenAI API Key not found. Please provide it or set the OPENAI_API_KEY environment variable.")
+            # 允许在没有 API Key 的情况下初始化，但会在调用时失败
+            print("警告: 未设置 OPENAI_API_KEY。请确保在运行环境中设置了正确的 API Key。")
             
         super().__init__(model_name, key)
         
-        # 注意：这里使用 client = OpenAI() 即可，因为沙箱环境已配置好 API Key 和 Base URL
-        self.client = OpenAI()
+        # 优先使用传入的 base_url，否则尝试从环境变量获取，最后使用 OpenAI 默认值
+        self.base_url = base_url if base_url else os.environ.get("OPENAI_BASE_URL")
+        
+        # 初始化 OpenAI 客户端
+        # 注意：在沙箱环境中，如果 base_url 为 None，OpenAI() 会使用沙箱预配置的代理。
+        # 如果提供了 base_url，则使用提供的 base_url。
+        self.client = OpenAI(
+            api_key=self.api_key,
+            base_url=self.base_url
+        )
 
     def generate_response(self, system_prompt: str, user_prompt: str, history: List[Dict[str, str]] = None) -> str:
         
@@ -45,13 +54,9 @@ class OpenAIConnector(LLMConnector):
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_prompt}
         ]
-        
-        # 实际生产中，可以根据需要将 history 插入到 messages 中
-        # 但由于我们的 MemoryManager 已经将历史和 RAG 结果融合到了 user_prompt 中，
-        # 这里的 history 参数暂时可以忽略，专注于处理融合后的 user_prompt。
 
         try:
-            print(f"--- OpenAI LLM Call (Model: {self.model_name}) ---")
+            print(f"--- OpenAI LLM Call (Model: {self.model_name}, Base URL: {self.base_url or 'Default'}) ---")
             
             response = self.client.chat.completions.create(
                 model=self.model_name,

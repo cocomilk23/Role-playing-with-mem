@@ -24,8 +24,8 @@ def run_openai_example():
     # 注意：在沙箱环境中，OPENAI_API_KEY 环境变量已配置。
     # 如果在本地运行，请确保设置了 OPENAI_API_KEY。
     try:
-        llm_connector = OpenAIConnector(model_name="gpt-4o-mini")
-    except ValueError as e:
+        llm_connector = OpenAIConnector(model_name="gpt-4o-mini", base_url="https://hk.uniapi.io")
+    except Exception as e: # 捕获更广泛的异常，例如 API Key 缺失或连接错误
         print(f"警告: {e}。将回退到 MockLLMConnector。")
         llm_connector = MockLLMConnector()
     
