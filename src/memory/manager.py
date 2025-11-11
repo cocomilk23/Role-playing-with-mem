@@ -1,7 +1,8 @@
 from typing import Optional
 from memory.types import DialogueMemory, ActiveMemory, ProfessionalMemory, ProfessionalMemoryQuery
-from memory.persistence import PersistenceLayer, FilePersistenceLayer, ProfessionalMemoryRAG, MockRAG
+from memory.persistence import PersistenceLayer, FilePersistenceLayer, ProfessionalMemoryRAG
 from role import Role
+from memory.rag_utils import ChromaDBRAG # 导入新的 RAG 实现
 
 class MemoryManager:
     """
@@ -19,8 +20,10 @@ class MemoryManager:
             base_path=f"/home/ubuntu/Role-playing-with-mem/data/memory_store/{role.role_id}"
         )
         
-        # 2. RAG 系统：用于 Professional Memory 的检索
-        self.rag_system = rag_system if rag_system else MockRAG()
+        # 2. RAG 系统：默认使用 ChromaDBRAG
+        self.rag_system = rag_system if rag_system else ChromaDBRAG(
+            db_path="/home/ubuntu/Role-playing-with-mem/data/chroma_db"
+        )
         
         # 3. 内存中的记忆实例
         self.dialogue_memory: DialogueMemory = self.persistence.load_dialogue_memory(user_id, role.role_id)
@@ -32,8 +35,6 @@ class MemoryManager:
         """
         self.dialogue_memory.add_message(sender, content)
         self.persistence.save_dialogue_memory(self.dialogue_memory)
-        
-        # TODO: 可以在这里实现一个机制，将关键信息提取并更新到 Active Memory
 
     def get_recent_dialogue(self, n: int = 5) -> str:
         """
@@ -67,6 +68,7 @@ class MemoryManager:
         检索 Professional Memory。
         """
         if not self.role.professional_knowledge_path:
+            print("警告: 未在角色配置中找到 professional_knowledge_path。无法进行专业记忆检索。")
             return ProfessionalMemory()
             
         return self.rag_system.retrieve(
@@ -78,20 +80,12 @@ class MemoryManager:
         """
         记忆融合：将所有记忆类型融合为一个完整的 Prompt 上下文。
         """
-        # 1. 角色身份 (System Prompt)
         role_context = f"你的身份和核心指令：\n{self.role.system_prompt}\n\n"
-        
-        # 2. 激活记忆 (高频/近期)
         active_context = self.get_active_memory_context()
-        
-        # 3. 对话记忆 (历史)
         dialogue_context = self.get_recent_dialogue(n=5)
-        
-        # 4. 专业记忆 (RAG 检索)
         professional_memory = self.retrieve_professional_memory(user_query)
         professional_context = professional_memory.to_prompt_context()
         
-        # 5. 最终融合 Prompt
         fused_prompt = (
             f"{role_context}"
             f"{active_context}"
