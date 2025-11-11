@@ -4,7 +4,7 @@ import os
 # 将项目根目录添加到 Python 路径，以便正确解析相对导入
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), 'src')))
 
-from agent import run_example, Role, RolePlayingAgent
+from agent import Role, RolePlayingAgent
 from memory.rag_utils import index_documents_to_chroma # 导入索引工具
 from llm.connector import OpenAIConnector, MockLLMConnector # 导入 LLM 连接器
 
@@ -14,7 +14,7 @@ def run_openai_example():
     """
     # 1. 确保角色配置文件存在
     from role import create_default_role_config
-    default_config_path = '/home/ubuntu/Role-playing-with-mem/config/roles/default_role.json'
+    default_config_path = '/home/jijingbo/Role-playing-with-mem/config/roles/default_role.json'
     create_default_role_config(default_config_path)
     
     # 2. 加载角色
@@ -60,21 +60,21 @@ def run_openai_example():
     
     # 7. 检查持久化文件
     print("--- 检查记忆持久化文件 ---")
-    memory_path = f"/home/ubuntu/Role-playing-with-mem/data/memory_store/{role.role_id}"
+    memory_path = f"/home/jijingbo/Role-playing-with-mem/data/memory_store/{role.role_id}"
     print(f"记忆存储路径: {memory_path}")
     print(f"文件列表: {os.listdir(memory_path)}")
 
 
 if __name__ == '__main__':
     # 确保运行环境正确
-    os.chdir('/home/ubuntu/Role-playing-with-mem')
+    os.chdir('/home/jijingbo/Role-playing-with-mem')
     
     # 1. 确保 data 目录存在
     os.makedirs('data/memory_store/default_medical_assistant', exist_ok=True)
     
     # 2. 索引专业知识文档到 ChromaDB
     KNOWLEDGE_PATH = "medical_knowledge_index_v1"
-    KNOWLEDGE_FILE = "/home/ubuntu/Role-playing-with-mem/data/medical_knowledge.txt"
+    KNOWLEDGE_FILE = "/home/jijingbo/Role-playing-with-mem/data/medical_knowledge.txt"
     
     # 确保知识文件存在
     if not os.path.exists(KNOWLEDGE_FILE):
@@ -82,7 +82,7 @@ if __name__ == '__main__':
     else:
         index_documents_to_chroma(
             file_path=KNOWLEDGE_FILE,
-            collection_name=KNOWLEDGE_PATH, db_path="/home/ubuntu/Role-playing-with-mem/data/chroma_db"
+            collection_name=KNOWLEDGE_PATH, db_path="/home/jijingbo/Role-playing-with-mem/data/chroma_db"
         )
     
     # 3. 运行示例

@@ -54,6 +54,7 @@ class Role:
 # ----------------------------------------------------------------------
 
 def create_default_role_config(path: str):
+    
     """
     创建默认的角色配置文件示例。
     """
@@ -72,8 +73,8 @@ def create_default_role_config(path: str):
         json.dump(default_config, f, ensure_ascii=False, indent=4)
 
 if __name__ == '__main__':
-    # 示例：创建默认配置文件
-    default_config_path = '/home/ubuntu/Role-playing-with-mem/config/roles/default_role.json'
+    # 测试角色配置的创建和加载
+    default_config_path = '/home/jijingbo/Role-playing-with-mem/config/roles/default_role.json'
     create_default_role_config(default_config_path)
     
     # 示例：加载角色

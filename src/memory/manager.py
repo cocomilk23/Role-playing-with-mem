@@ -17,12 +17,12 @@ class MemoryManager:
         
         # 1. 持久化层：用于 Dialogue Memory 和 Active Memory 的长期存储
         self.persistence = persistence_layer if persistence_layer else FilePersistenceLayer(
-            base_path=f"/home/ubuntu/Role-playing-with-mem/data/memory_store/{role.role_id}"
+            base_path=f"/home/jijingbo/Role-playing-with-mem/data/memory_store/{role.role_id}"
         )
         
         # 2. RAG 系统：默认使用 ChromaDBRAG
         self.rag_system = rag_system if rag_system else ChromaDBRAG(
-            db_path="/home/ubuntu/Role-playing-with-mem/data/chroma_db"
+            db_path="/home/jijingbo/Role-playing-with-mem/data/chroma_db"
         )
         
         # 3. 内存中的记忆实例
